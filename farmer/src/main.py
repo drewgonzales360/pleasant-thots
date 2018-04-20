@@ -29,8 +29,8 @@ def find():
     Checks if anyone has sent any replys to @margaritashita. Replys to mentions
     only once using global variable REPLIED_TO.
     """
-    if not os.path.isdir('log'):
-        os.mkdir('log')
+    if not os.path.isdir('logs'):
+        os.mkdir('logs')
 
     while True:
         searchResults = api.search(q="@realDonaldTrump", lang="en", tweet_mode='extended')
@@ -40,7 +40,7 @@ def find():
             # Let's not grab retweets
             retweet = r._json.get("retweeted_status")
             if retweet is None:
-                out = open('log/trump.txt', 'a+')
+                out = open('logs/trump.txt', 'a+')
                 print(r.full_text, end=BAR)
                 out.write(str(r.full_text) + BAR)
                 out.close()
