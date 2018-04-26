@@ -1,0 +1,52 @@
+---
+- hosts: galaxy
+  tasks:
+    - name: Install git
+      become: yes
+      apt:
+        name: git
+        update_cache: yes
+        state: present
+
+    - name: Install vim
+      become: yes
+      apt:
+        name: vim
+        update_cache: yes
+        state: present
+
+    - name: Check for docker
+      shell: docker
+      register: dockered
+      ignore_errors: yes
+
+    - name: install docker
+      become: yes
+      shell: curl -sSL https://get.docker.com | sh
+      when: dockered.rc != 0
+
+    - name: Check for kubernetes
+      shell: kubeadm
+      register: kubernetesed
+      ignore_errors: yes
+
+    - name: install kubernetes
+      become: yes
+      shell: |
+          curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+          echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+      when: kubernetesed.rc != 0
+
+    - name: install kubernetes
+      become: yes
+      apt:
+        name: kubeadm
+        update_cache: yes
+        state: present
+
+    - name: Update all packages to the latest version
+      become: yes
+      apt:
+        upgrade: dist
+        autoclean: yes
+...
