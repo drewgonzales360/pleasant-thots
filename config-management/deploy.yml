@@ -1,0 +1,36 @@
+---
+- hosts: galaxy
+  tasks:
+
+    - name: clear workspace
+      become: yes
+      file:
+        path: /home/projex/pleasant-thots
+        state: absent
+
+    - name: clone
+      become: yes
+      git:
+        repo: 'https://github.com/drewgonzales360/pleasant-thots.git'
+        dest: /home/projex/pleasant-thots
+        force: yes
+
+    - name: install dependencies in virtualenv
+      become: yes
+      pip:
+        chdir: /home/projex/pleasant-thots
+        name: tweepy TextBlob pandas matplotlib coinbase coinmarketcap
+        virtualenv: /home/projex/pleasant-thots/virtualenv
+
+    - name: kill the process if it's running
+      become: yes
+      shell: "kill -9 $(ps -ef | grep -v grep | grep -w "farmer/src/main.py" | awk '{print $2}')"
+      register: running_processes
+      ignore_errors: yes
+
+    - name: start making money
+      become: yes
+      shell: |
+        source /home/projex/pleasant-thots/virtualenv/bin/activate;
+        python /home/projex/pleasant-thots/farmer/src/main.py;
+...
