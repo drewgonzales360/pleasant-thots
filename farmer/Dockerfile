@@ -1,10 +1,7 @@
-FROM resin/raspberry-pi-python:3.5.2
+FROM docker pull resin/qemux86-alpine-python:2.7
 
-RUN pip install tweepy
+RUN pip install tweepy TextBlob pandas matplotlib coinbase coinmarketcap
 
 RUN mkdir -p /pleasant-thots/logs
-ADD src/main.py /pleasant-thots/main.py
 
 WORKDIR /pleasant-thots
-
-CMD ["python", "main.py"]
