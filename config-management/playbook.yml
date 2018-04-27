@@ -49,4 +49,11 @@
       apt:
         upgrade: dist
         autoclean: yes
+
+    - name: Add the user 'ed'
+      become: yes
+      user:
+        name: ed
+        groups: sudo,docker
+        shell: /bin/bash
 ...
