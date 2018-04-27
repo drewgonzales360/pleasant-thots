@@ -51,9 +51,9 @@ def readData(data):
 
         #get rid of 0 tweet sentiments (not helpful for decisions)
         if tweet_sentiment != 0:
-            print ('Sentiment:', tweet_sentiment)
+            print ('Sentiment:', tweet_sentiment, 'Text: ', tweet_txt)
             new_tweet = {'text':tweet_txt, 'sentiment':tweet_sentiment, 'retweet_count': tweet['retweet_count']}
-            with open ('test.json', 'a') as test_file:
+            with open ('tweet_logs.json', 'a') as test_file:
                 json.dump(new_tweet, test_file)
                 test_file.write(os.linesep)
 
@@ -65,10 +65,14 @@ def get_tweet_sentiment(tweet_txt, retweet_count):
     else:
         new_analysis = analysis.sentiment.polarity * retweet_count 
     #print ("With Weight", new_analysis)
-    #sentiment.append(analysis.sentiment.polarity)
     return new_analysis
 
-def start_streaming(thread_name, twitter_consumer_key, twitter_consumer_secret, twitter_access_token, twitter_access_token_secret):
+def start_streaming(thread_name, 
+        twitter_consumer_key, 
+        twitter_consumer_secret, 
+        twitter_access_token, 
+        twitter_access_token_secret, 
+        crypto_currency):
     print (thread_name + ' starting')
     l = StdOutListener()
 
@@ -76,5 +80,7 @@ def start_streaming(thread_name, twitter_consumer_key, twitter_consumer_secret, 
     auth.set_access_token(twitter_access_token, twitter_access_token_secret)
 
     stream = Stream(auth, l)
-    stream.filter(track = ['ripple', 'xrp'])
+
+
+    stream.filter(track = crypto_currency)
 
