@@ -5,6 +5,7 @@ import os, json
 
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template import loader
 
 def index(request):
     analysis_data = {}
@@ -17,7 +18,18 @@ def index(request):
         print ("Could not open: ", file_location)
 
     currency = analysis_data['currency']
-    sentiment = round(analysis_data['avg_sentiment'])
+    currency_output = {'data': currency[1], 'txt': 'CURRENCY'}
+    sentiment = round(analysis_data['avg_sentiment'], 2)
+    sentiment_output = {'data': sentiment, 'txt': 'SENTIMENT'}
     decision = analysis_data['decision']
-    return HttpResponse(json.dumps(analysis_data,indent=4, sort_keys=True))
+    decision_output = {'data': decision, 'txt': 'DECISION' }
+    senti_list = []
+    senti_list.append(currency_output)
+    senti_list.append(sentiment_output)
+    senti_list.append(decision_output)
+    context = {
+        'senti_list': senti_list,
+    }
+    #return HttpResponse(template.render(decision, request))
+    return render(request, 'twitter_sentiment/index.html', context)
 
