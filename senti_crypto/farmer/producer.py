@@ -27,7 +27,6 @@ class StdOutListener(StreamListener):
         print(status)
 
 def readData(data):
-    #print ("postProcessed:")
     tweet = json.loads(data)
     #print (json.dumps(tweet, indent=4, sort_keys=True))
     retweet = None
@@ -53,7 +52,7 @@ def readData(data):
         if tweet_sentiment != 0:
             print ('Sentiment:', tweet_sentiment, 'Text: ', tweet_txt)
             new_tweet = {'text':tweet_txt, 'sentiment':tweet_sentiment, 'retweet_count': retweet_count, 'timestamp_ms': tweet['timestamp_ms']}
-            with open ('tweet_logs.json', 'a') as test_file:
+            with open ('farmer/logs/tweet_logs.json', 'a') as test_file:
                 json.dump(new_tweet, test_file)
                 test_file.write(os.linesep)
 
@@ -75,12 +74,9 @@ def start_streaming(thread_name,
         crypto_currency):
     print (thread_name + ' starting')
     l = StdOutListener()
-
     auth = OAuthHandler(twitter_consumer_key, twitter_consumer_secret)
     auth.set_access_token(twitter_access_token, twitter_access_token_secret)
 
     stream = Stream(auth, l)
-
-
     stream.filter(track = crypto_currency)
 
