@@ -19,12 +19,24 @@
       become: yes
       pip:
         chdir: /home/projex/pleasant-thots
-        name: tweepy TextBlob pandas matplotlib coinbase coinmarketcap
+        name: tweepy textblob coinbase coinmarketcap
         virtualenv: /home/projex/pleasant-thots/virtualenv
+
+    - name: install dependencies in matplotlib
+      become: yes
+      apt:
+        name: python-matplotlib
+        state: present
+
+    - name: install dependencies in pandas
+      become: yes
+      apt:
+        name: python-pandas
+        state: present
 
     - name: kill the process if it's running
       become: yes
-      shell: "kill -9 $(ps -ef | grep -v grep | grep -w "farmer/src/main.py" | awk '{print $2}')"
+      shell: "kill -9 $(ps -ef | grep -v grep | grep -w 'farmer/src/main.py' | awk '{print $2}')"
       register: running_processes
       ignore_errors: yes
 
@@ -33,4 +45,6 @@
       shell: |
         source /home/projex/pleasant-thots/virtualenv/bin/activate;
         python /home/projex/pleasant-thots/farmer/src/main.py;
+      args:
+        executable: /bin/bash
 ...
