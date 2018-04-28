@@ -18,9 +18,7 @@
     - name: install dependencies in virtualenv
       become: yes
       pip:
-        chdir: /home/projex/pleasant-thots
         name: tweepy textblob coinbase coinmarketcap
-        virtualenv: /home/projex/pleasant-thots/virtualenv
 
     - name: install dependencies in matplotlib
       become: yes
@@ -43,7 +41,6 @@
     - name: start making money
       become: yes
       shell: |
-        source /home/projex/pleasant-thots/virtualenv/bin/activate;
         python /home/projex/pleasant-thots/farmer/src/main.py;
       args:
         executable: /bin/bash
