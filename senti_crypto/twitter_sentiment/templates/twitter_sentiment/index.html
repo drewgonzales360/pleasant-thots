@@ -1,0 +1,21 @@
+{% if senti_list  %}
+    <ul>
+    {% for node in senti_list %}
+    	{% if node.txt == 'DECISION' %}
+		{% if node.data == 'BUY' %}
+    			<center><p><font size="16" color="green"> {{ node.txt }}:{{ node.data }} </font></p></center>
+		{% endif %}
+		{% if node.data == 'HOLD' %}
+    			<center><p><font size="16" color="orange"> {{ node.txt }}:{{ node.data }} </font></p></center>
+		{% endif %}
+		{% if node.data == 'SELL' %}
+    			<center><p><font size="16" color="red"> {{ node.txt }}:{{ node.data }} </font></p></center>
+		{% endif %}
+	{% else %}
+		<center><p><font size="16"> {{ node.txt }}:{{ node.data }} </font></p></center>
+    	{% endif %}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Data Avaiable</p>
+{% endif %}
