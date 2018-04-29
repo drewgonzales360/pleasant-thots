@@ -148,6 +148,7 @@ def trade_sim(decision, price, avg_sentiment):
             print ('Number of Shares is 0, cannot sell')
             pass
         elif transact_shares >= number_of_shares:
+            transact_shares = number_of_shares
             amount = float(number_of_shares) * float(price)
             number_of_shares = 0
             wallet_balance = wallet_balance + amount
