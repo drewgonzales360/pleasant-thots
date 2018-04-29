@@ -1,9 +1,6 @@
-FROM resin/raspberry-pi-python:2.7.13
+FROM resin/rpi-raspbian
 
-
-RUN \
-apt-get update; \
-apt-get upgrade; 
+RUN apt-get update && apt-get install -y  apt-utils pip;
 
 RUN sudo apt-get install libfreetype6-dev pkg-config libpng12-dev
 RUN \
