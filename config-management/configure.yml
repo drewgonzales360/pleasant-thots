@@ -66,12 +66,6 @@
         replace: 'cgroup-driver=cgroupfs'
         backup: yes
 
-    - name: Update all packages to the latest version
-      become: yes
-      apt:
-        upgrade: dist
-        autoclean: yes
-
     - name: Add the user 'ed'
       become: yes
       user:
@@ -109,4 +103,10 @@
         name: ansible
         update_cache: yes
         state: present
+
+    - name: Update all packages to the latest version
+      become: yes
+      apt:
+        upgrade: yes
+        autoclean: yes
 ...
