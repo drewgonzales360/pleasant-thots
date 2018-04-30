@@ -44,6 +44,28 @@
         update_cache: yes
         state: present
 
+    - name: install kubernetes
+      become: yes
+      apt:
+        name: kubelet
+        update_cache: yes
+        state: present
+
+    - name: install kubernetes
+      become: yes
+      apt:
+        name: kubectl
+        update_cache: yes
+        state: present
+
+    - name: configure cgroup
+      become: yes
+      replace:
+        path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+        regexp: 'cgroup-driver=.*'
+        replace: 'cgroup-driver=cgroupfs'
+        backup: yes
+
     - name: Update all packages to the latest version
       become: yes
       apt:
@@ -57,7 +79,7 @@
         groups: sudo,docker
         shell: /bin/bash
 
-    - name: Check for kubernetes
+    - name: Check for pip
       shell: pip
       register: piped
       ignore_errors: yes
