@@ -154,7 +154,7 @@ def trade_sim(decision, price, avg_sentiment):
             wallet_balance = wallet_balance + amount
         else:
             print ('wallet balance: ', wallet_balance)
-            amount = float(transact_shares * price)
+            amount = float(transact_shares) * float(price)
             wallet_balance = wallet_balance + amount
             number_of_shares = number_of_shares - transact_shares
 
