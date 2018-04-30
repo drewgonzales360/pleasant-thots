@@ -24,10 +24,10 @@ def start_analysis(thread_name, crypto_currency):
     create_reference(price)
 
     while True:
-        with open('tweet_logs.json', 'r') as sentiment_file:
+        with open('farmer/logs/tweet_logs.json', 'r') as sentiment_file:
             sentiment_data = [json.loads(sentiment_node) for sentiment_node in sentiment_file]
 
-        with open('tweet_logs.json', 'wr+') as sentiment_file:
+        with open('farmer/logs/tweet_logs.json', 'wr+') as sentiment_file:
             sentiment_file.truncate(0)
 
         sum_sentiment = 0
@@ -54,9 +54,10 @@ def start_analysis(thread_name, crypto_currency):
                                 'avg_sentiment': avg_sentiment,
                                 'decision': decision,
                                 'current_price_usd': price,
+                                'currency': crypto_currency,
                                 'timestamp_ms': current_milli_time()}
 
-            with open('analysis.json', 'a') as analysis_file:
+            with open('farmer/logs/analysis.json', 'a') as analysis_file:
                 json.dump(tweets_analysis, analysis_file)
                 analysis_file.write(os.linesep)
         time.sleep(60)
@@ -72,14 +73,16 @@ def trade_decision(avg_sentiment):
 
 def create_reference(price):
     print ("Creating Reference File")
-    with open ('reference.json', 'r') as reference_file:
+    with open ('farmer/logs/reference.json', 'r') as reference_file:
         reference_data = [json.loads(reference_node) for reference_node in reference_file]
         reference_data = reference_data[-1]
 
     wallet_balance = float(reference_data['wallet_balance'])
     transact_shares = round(wallet_balance / float(price))
     amount = float(price) * transact_shares
-    if amount > wallet_balance:
+    if reference_data['number_of_shares'] > 0:
+        transact_shares = reference_data['number_of_shares']
+    elif amount > wallet_balance:
         transact_shares = transact_shares - 1
         amount = float(price) * transact_shares
         wallet_balance = wallet_balance - amount
@@ -96,13 +99,13 @@ def create_reference(price):
                         'current_value': current_value,
                         'timestamp_ms': current_milli_time()}
     print (new_transaction)
-    with open ('reference.json', 'a') as reference_file:
+    with open ('farmer/logs/reference.json', 'a') as reference_file:
         json.dump(new_transaction, reference_file)
         reference_file.write(os.linesep)
 
 def update_reference(price):
     print ("Updating Reference File")
-    with open ('reference.json', 'r') as reference_file:
+    with open ('farmer/logs/reference.json', 'r') as reference_file:
         reference_data = [json.loads(reference_node) for reference_node in reference_file]
         reference_data = reference_data[-1]
 
@@ -114,14 +117,12 @@ def update_reference(price):
                         'current_value': current_value,
                         'timestamp_ms': current_milli_time()}
     print (new_reference)
-    with open ('reference.json', 'a') as reference_file:
+    with open ('farmer/logs/reference.json', 'a') as reference_file:
         json.dump(new_reference, reference_file)
         reference_file.write(os.linesep)
 
-
-
 def trade_sim(decision, price, avg_sentiment):
-    with open ('wallet.json', 'r') as wallet_file:
+    with open ('farmer/logs/wallet.json', 'r') as wallet_file:
         wallet_data = [json.loads(wallet_node) for wallet_node in wallet_file]
         wallet_data = wallet_data[-1]
         wallet_balance = float(wallet_data['wallet_balance'])
@@ -147,6 +148,7 @@ def trade_sim(decision, price, avg_sentiment):
             print ('Number of Shares is 0, cannot sell')
             pass
         elif transact_shares >= number_of_shares:
+            transact_shares = number_of_shares
             amount = float(number_of_shares) * float(price)
             number_of_shares = 0
             wallet_balance = wallet_balance + amount
@@ -166,7 +168,7 @@ def trade_sim(decision, price, avg_sentiment):
                         'current_value': current_value,
                         'timestamp_ms': current_milli_time()}
     print (new_transaction)
-    with open ('wallet.json', 'a') as wallet_file:
+    with open ('farmer/logs/wallet.json', 'a') as wallet_file:
         json.dump(new_transaction, wallet_file)
         wallet_file.write(os.linesep)
 
