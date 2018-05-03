@@ -91,19 +91,6 @@
       pip:
         name: virtualenv
 
-    - name: Add an apt key by id from a keyserver
-      apt_key:
-        keyserver: keyserver.ubuntu.com
-        id: 93C4A3FD7BB9C367
-        state: pressent
-
-    - name: install ansible
-      become: yes
-      apt:
-        name: ansible
-        update_cache: yes
-        state: present
-
     - name: Update all packages to the latest version
       become: yes
       apt:
