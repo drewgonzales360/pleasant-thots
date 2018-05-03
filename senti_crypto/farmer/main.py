@@ -9,6 +9,7 @@ import consumer
 
 #crypto_currency = ['bitcoin', 'BTC', 'ripple', 'XRP', 'ETH', 'ETC']
 crypto_currency = ['ripple', 'XRP']
+#crypto_currency = ['substratum']
 
 # Connect to Twitter
 twitter_consumer_key = 'aMZWIC8rUe1SA3SFxCigpC9Au'
