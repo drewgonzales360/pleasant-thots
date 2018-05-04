@@ -40,12 +40,12 @@ def start_analysis(thread_name, crypto_currency):
         else:
             avg_sentiment = sum_sentiment/len(sentiment_data)
             #avg_sentiment = -0.654
-            print ("Number of Tweets Processed: ", len(sentiment_data))
-            print ("Average Sentiment: ", avg_sentiment)
+            #print ("Number of Tweets Processed: ", len(sentiment_data))
+            #print ("Average Sentiment: ", avg_sentiment)
             decision = trade_decision(avg_sentiment)
-            print ("Trade Decision: ", decision)
+            #print ("Trade Decision: ", decision)
             price = get_current_price(crypto_currency)
-            print ("Current Price (USD): ", price)
+            #print ("Current Price (USD): ", price)
 
             update_reference(price)
             trade_sim(decision, price, avg_sentiment)
@@ -60,7 +60,7 @@ def start_analysis(thread_name, crypto_currency):
             with open('farmer/logs/analysis.json', 'a') as analysis_file:
                 json.dump(tweets_analysis, analysis_file)
                 analysis_file.write(os.linesep)
-        time.sleep(60)
+        time.sleep(600)
 
 def trade_decision(avg_sentiment):
     if avg_sentiment <= 1 and avg_sentiment >= 0.5:
@@ -91,14 +91,14 @@ def create_reference(price):
 
     current_value = (transact_shares * float(price)) + float(wallet_balance)
 
-    print ("transact_shares: ", transact_shares)
+    #print ("transact_shares: ", transact_shares)
     new_transaction = {'wallet_balance': wallet_balance,
                         'currency':reference_data['currency'],
                         'current_price': price,
                         'number_of_shares': transact_shares,
                         'current_value': current_value,
                         'timestamp_ms': current_milli_time()}
-    print (new_transaction)
+    #print (new_transaction)
     with open ('farmer/logs/reference.json', 'a') as reference_file:
         json.dump(new_transaction, reference_file)
         reference_file.write(os.linesep)
@@ -116,7 +116,7 @@ def update_reference(price):
                         'number_of_shares': reference_data['number_of_shares'],
                         'current_value': current_value,
                         'timestamp_ms': current_milli_time()}
-    print (new_reference)
+    #print (new_reference)
     with open ('farmer/logs/reference.json', 'a') as reference_file:
         json.dump(new_reference, reference_file)
         reference_file.write(os.linesep)
@@ -153,7 +153,7 @@ def trade_sim(decision, price, avg_sentiment):
             number_of_shares = 0
             wallet_balance = wallet_balance + amount
         else:
-            print ('wallet balance: ', wallet_balance)
+            #print ('wallet balance: ', wallet_balance)
             amount = float(transact_shares) * float(price)
             wallet_balance = wallet_balance + amount
             number_of_shares = number_of_shares - transact_shares
@@ -167,14 +167,14 @@ def trade_sim(decision, price, avg_sentiment):
                         'number_of_shares': number_of_shares,
                         'current_value': current_value,
                         'timestamp_ms': current_milli_time()}
-    print (new_transaction)
+    print ("new_tranaction:", new_transaction)
     with open ('farmer/logs/wallet.json', 'a') as wallet_file:
         json.dump(new_transaction, wallet_file)
         wallet_file.write(os.linesep)
 
 def get_transact_shares(avg_sentiment):
     transact_shares = int(str(abs(avg_sentiment))[2])
-    print ("Shares: ", transact_shares)
+    #print ("Shares: ", transact_shares)
     return transact_shares
 
 def get_current_price(crypto_currency):

@@ -51,7 +51,7 @@ def readData(data):
         #get rid of 0 tweet sentiments (not helpful for decisions)
         if tweet_sentiment != 0:
             #print ('Sentiment:', tweet_sentiment, 'Text: ', tweet_txt)
-            print ('Sentiment:', tweet_sentiment)
+            #print ('Sentiment:', tweet_sentiment)
             new_tweet = {'text':tweet_txt, 'sentiment':tweet_sentiment, 'retweet_count': retweet_count, 'timestamp_ms': tweet['timestamp_ms']}
             with open ('farmer/logs/tweet_logs.json', 'a') as test_file:
                 json.dump(new_tweet, test_file)
