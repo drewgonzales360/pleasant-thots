@@ -1,12 +1,1 @@
 {"wallet_balance":100.00, "currency":"XRP", "current_price":"0.00", "number_of_shares":0}
-{"number_of_shares": 0, "wallet_balance": 100.0, "current_value": 100.0, "timestamp_ms": 1524879350446, "currency": "XRP", "current_price": "0.822164"}
-{"number_of_shares": 0, "wallet_balance": 100.0, "current_value": 100.0, "timestamp_ms": 1524879410458, "currency": "XRP", "current_price": "0.822164"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.0, "timestamp_ms": 1524879470968, "currency": "XRP", "current_price": "0.822164"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.005772, "timestamp_ms": 1524879730065, "currency": "XRP", "current_price": "0.824088"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.005772, "timestamp_ms": 1524879801819, "currency": "XRP", "current_price": "0.824088"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.011022, "timestamp_ms": 1524879862301, "currency": "XRP", "current_price": "0.825838"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.015579, "timestamp_ms": 1524880437535, "currency": "XRP", "current_price": "0.827357"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.015579, "timestamp_ms": 1524880510617, "currency": "XRP", "current_price": "0.827357"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.019014, "timestamp_ms": 1524880707679, "currency": "XRP", "current_price": "0.828502"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.019014, "timestamp_ms": 1524880827310, "currency": "XRP", "current_price": "0.828502"}
-{"number_of_shares": 3, "wallet_balance": 97.533508, "current_value": 100.019548, "timestamp_ms": 1524880942086, "currency": "XRP", "current_price": "0.82868"}
