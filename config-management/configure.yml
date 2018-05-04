@@ -73,6 +73,20 @@
         groups: sudo,docker
         shell: /bin/bash
 
+    - name: Add the user 'drew'
+      become: yes
+      user:
+        name: drew
+        groups: sudo,docker
+        shell: /bin/bash
+
+    - name: remove pi
+      become: yes
+      user:
+        name: pi
+        state: absent
+        remove: yes
+
     - name: Check for pip
       shell: pip
       register: piped
