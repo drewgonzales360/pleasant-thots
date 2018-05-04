@@ -1,0 +1,22 @@
+---
+- hosts: galaxy-slaves
+  tasks:
+
+    - name: copy cmdline.txt
+      become: yes
+      copy:
+        src: cmdline.txt
+        dest: /boot/cmdline.txt
+
+    - name: turn swap off
+      become: yes
+      shell: swapoff -a
+      args:
+        executable: /bin/bash
+
+    - name: start making money
+      become: yes
+      shell: sudo kubeadm join 10.0.0.132:6443 --token jucpby.6401a0nou68kay1w --discovery-token-ca-cert-hash sha256:13628850540b2050c42e40e74d79f22986431fef641e4f03bdd7d6453a197d1f
+      args:
+        executable: /bin/bash
+...
