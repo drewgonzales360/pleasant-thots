@@ -3,6 +3,7 @@
 from __future__ import absolute_import, print_function
 
 import os
+import os.path
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,51 +17,51 @@ from coinmarketcap import Market
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
-def start_analysis(thread_name, crypto_currency):
+def start_analysis(thread_name, crypto_currency, exp_name, start_balance):
     time.sleep(60)
     print (thread_name + ' starting')
     
     price = get_current_price(crypto_currency)
-    create_reference(price)
+    create_experiment(price, exp_name, crypto_currency, start_balance)
 
-    while True:
-        with open('farmer/logs/tweet_logs.json', 'r') as sentiment_file:
-            sentiment_data = [json.loads(sentiment_node) for sentiment_node in sentiment_file]
+#    while True:
+#        with open('farmer/logs/tweet_logs.json', 'r') as sentiment_file:
+#            sentiment_data = [json.loads(sentiment_node) for sentiment_node in sentiment_file]
+#
+#        with open('farmer/logs/tweet_logs.json', 'wr+') as sentiment_file:
+#            sentiment_file.truncate(0)
 
-        with open('farmer/logs/tweet_logs.json', 'wr+') as sentiment_file:
-            sentiment_file.truncate(0)
-
-        sum_sentiment = 0
-        for sentiment_node in sentiment_data:
-            sum_sentiment = sum_sentiment + sentiment_node['sentiment'] 
+#        sum_sentiment = 0
+#        for sentiment_node in sentiment_data:
+#            sum_sentiment = sum_sentiment + sentiment_node['sentiment'] 
   
-        if sum_sentiment == 0:
-            print ("Nothing to process, passing and waiting")
-            pass
-        else:
-            avg_sentiment = sum_sentiment/len(sentiment_data)
+#        if sum_sentiment == 0:
+#            print ("Nothing to process, passing and waiting")
+#            pass
+#        else:
+#            avg_sentiment = sum_sentiment/len(sentiment_data)
             #avg_sentiment = -0.654
             #print ("Number of Tweets Processed: ", len(sentiment_data))
             #print ("Average Sentiment: ", avg_sentiment)
-            decision = trade_decision(avg_sentiment)
+#            decision = trade_decision(avg_sentiment)
             #print ("Trade Decision: ", decision)
-            price = get_current_price(crypto_currency)
+#            price = get_current_price(crypto_currency)
             #print ("Current Price (USD): ", price)
 
-            update_reference(price)
-            trade_sim(decision, price, avg_sentiment)
+#            update_reference(price)
+#            trade_sim(decision, price, avg_sentiment)
 
-            tweets_analysis = {'num_process': len(sentiment_data),
-                                'avg_sentiment': avg_sentiment,
-                                'decision': decision,
-                                'current_price_usd': price,
-                                'currency': crypto_currency,
-                                'timestamp_ms': current_milli_time()}
-
-            with open('farmer/logs/analysis.json', 'a') as analysis_file:
-                json.dump(tweets_analysis, analysis_file)
-                analysis_file.write(os.linesep)
-        time.sleep(600)
+#            tweets_analysis = {'num_process': len(sentiment_data),
+#                                'avg_sentiment': avg_sentiment,
+#                                'decision': decision,
+#                                'current_price_usd': price,
+#                                'currency': crypto_currency,
+#                                'timestamp_ms': current_milli_time()}
+#
+#            with open('farmer/logs/analysis.json', 'a') as analysis_file:
+#                json.dump(tweets_analysis, analysis_file)
+#                analysis_file.write(os.linesep)
+#        time.sleep(600)
 
 def trade_decision(avg_sentiment):
     if avg_sentiment <= 1 and avg_sentiment >= 0.5:
@@ -71,32 +72,22 @@ def trade_decision(avg_sentiment):
         decision = "SELL"
     return decision
 
-def create_reference(price):
-    print ("Creating Reference File")
-    with open ('farmer/logs/reference.json', 'r') as reference_file:
-        reference_data = [json.loads(reference_node) for reference_node in reference_file]
-        reference_data = reference_data[-1]
+def create_experiment(price, exp_name, currency, start_balance):
+    print ("Creating Expiriment File:", exp_name)
+    exp_file_path = 'farmer/logs/%s.json' % exp_name
 
-    wallet_balance = float(reference_data['wallet_balance'])
-    transact_shares = round(wallet_balance / float(price))
-    amount = float(price) * transact_shares
-    if reference_data['number_of_shares'] > 0:
-        transact_shares = reference_data['number_of_shares']
-    elif amount > wallet_balance:
-        transact_shares = transact_shares - 1
-        amount = float(price) * transact_shares
-        wallet_balance = wallet_balance - amount
-    else:
-        wallet_balance = wallet_balance - amount
+    if exp_file_path.is_file():
+        os.remove(exp_file_path)
 
-    current_value = (transact_shares * float(price)) + float(wallet_balance)
-
-    #print ("transact_shares: ", transact_shares)
-    new_transaction = {'wallet_balance': wallet_balance,
-                        'currency':reference_data['currency'],
+    first_transaction = {'exp_name': exp_name,
+                        'currency': currency,
                         'current_price': price,
-                        'number_of_shares': transact_shares,
-                        'current_value': current_value,
+                        'ref_balance': start_balance,
+                        'ref_shares': 0,
+                        'ref_value': start_balance,
+                        'exp_balance': start_balance,
+                        'exp_shares': 0,
+                        'exp_value': start_balance,
                         'timestamp_ms': current_milli_time()}
     #print (new_transaction)
     with open ('farmer/logs/reference.json', 'a') as reference_file:
