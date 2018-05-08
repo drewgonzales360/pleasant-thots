@@ -19,7 +19,7 @@ from coinmarketcap import Market
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 def start_analysis(exp_node):
-    time.sleep(60)
+    time.sleep(exp_node['poll_time'])
 
     exp_name = exp_node['exp_name']
     currency = exp_node['currency']
@@ -82,7 +82,7 @@ def start_analysis(exp_node):
             with open(exp_consumer_path, 'a') as exp_consumer_file:
                 json.dump(transaction, exp_consumer_file)
                 exp_consumer_file.write(os.linesep)
-        time.sleep(60)
+        time.sleep(exp_node['poll_time'])
 
 def get_avg_sentiment(exp_data):
     sum_sentiment = 0
