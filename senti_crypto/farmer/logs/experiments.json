@@ -1,8 +1,2 @@
-{"exp_name":"exp001", "currency":"ripple", "search_query":["ripple", "XRP"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time":60}
-{"exp_name":"exp002", "currency":"ethereum", "search_query":["ethereum", "ETH"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time":60}
-{"exp_name":"exp003", "currency":"EOS", "search_query":["EOS"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time":60}
-{"exp_name":"exp004", "currency":"litecoin", "search_query":["litecoin", "LTC"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time": 60}
-{"exp_name":"exp005", "currency":"ripple", "search_query":["ripple", "XRP"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time":600}
-{"exp_name":"exp006", "currency":"ethereum", "search_query":["ethereum", "ETH"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time":600}
-{"exp_name":"exp007", "currency":"EOS", "search_query":["EOS"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time":600}
-{"exp_name":"exp008", "currency":"litecoin", "search_query":["litecoin", "LTC"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time": 600}
+{"exp_name":"exp001", "currency":"ripple", "search_query":["ripple", "XRP"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time":10, "sentiment_range":8}
+{"exp_name":"exp002", "currency":"ethereum", "search_query":["ethereum", "ETH"], "start_balance":1000.00, "exp_producer":"twitter", "exp_consumer":"twitter", "poll_time":60, "sentiment_range":10}

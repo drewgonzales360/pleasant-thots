@@ -53,7 +53,9 @@ def start_analysis(exp_node):
             logging.debug("Nothing to process, passing and waiting")
             pass
         else:
-            decision = trade_decision(avg_sentiment)
+            sentiment_range = round(exp_node['sentiment_range']/2)
+
+            decision = get_trade_decision(avg_sentiment, sentiment_range)
             price = get_current_price(currency)
 
             #if first pass create ref_shares, ref_balance, and ref_value
@@ -63,8 +65,9 @@ def start_analysis(exp_node):
                                     avg_sentiment, 
                                     exp_consumer_data['exp_shares'],
                                     exp_consumer_data['exp_balance'], 
-                                    exp_consumer_data['exp_value']) 
-
+                                    exp_consumer_data['exp_value'],
+                                    sentiment_range) 
+            logging.debug(json.dumps(exp_data))
             #logging.debug("Experiment Balance: ", exp_data['exp_balance'])
             transaction = {'exp_name': exp_name,
                             'currency': currency,
@@ -76,6 +79,7 @@ def start_analysis(exp_node):
                             'exp_shares': exp_data['exp_shares'],
                             'exp_value': exp_data['exp_value'],
                             'decision': decision,
+                            'sentiment': avg_sentiment,
                             'num_process': len(exp_producer_data),
                             'timestamp_ms': current_milli_time()}
 
@@ -94,12 +98,14 @@ def get_avg_sentiment(exp_data):
     else:
         return (sum_sentiment/len(exp_data))
 
-def trade_decision(avg_sentiment):
-    if avg_sentiment <= 1 and avg_sentiment >= 0.5:
+def get_trade_decision(avg_sentiment, sentiment_range):
+    sentiment_range /= 10
+
+    if avg_sentiment <= 1 and avg_sentiment >= sentiment_range:
         decision = "BUY"
-    elif avg_sentiment > -0.5 and avg_sentiment < 0.5:
+    elif avg_sentiment > -sentiment_range and avg_sentiment < sentiment_range:
         decision = "HOLD"
-    elif avg_sentiment <= -0.5 and avg_sentiment >= -1:
+    elif avg_sentiment <= -sentiment_range and avg_sentiment >= -1:
         decision = "SELL"
     return decision
 
@@ -144,9 +150,9 @@ def create_experiment(price, exp_name, currency, start_balance):
         json.dump(first_transaction, exp_file)
         exp_file.write(os.linesep)
 
-def trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value):
+def trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value, sentiment_range):
     if decision == "BUY":
-        transact_shares = get_transact_shares(avg_sentiment) - 5
+        transact_shares = get_transact_shares(avg_sentiment) - sentiment_range
         amount = float(transact_shares) * float(price)
         if amount > exp_balance:
             logging.debug("Cannot Buy, ammount: %f is greater than wallet balance " % (amount))
@@ -157,7 +163,7 @@ def trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value
     elif decision == "HOLD":
         pass
     elif decision == "SELL":
-        transact_shares = get_transact_shares(avg_sentiment) - 5
+        transact_shares = get_transact_shares(avg_sentiment) - sentiment_range
         
         if exp_shares == 0:
             logging.debug('Number of Shares is 0, cannot sell')
