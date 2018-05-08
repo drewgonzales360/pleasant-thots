@@ -29,7 +29,7 @@ class StdOutListener(StreamListener):
     def on_error(self, status):
         logging.error(status)
 
-def readData(data, exp_name):
+def readData(data, experiments):
     tweet = json.loads(data)
     retweet = None
     try:
@@ -41,16 +41,28 @@ def readData(data, exp_name):
     if retweet is None:
         tweet_txt = tweet['text']
         retweet_count = tweet['retweet_count']
-        tweet_sentiment = get_tweet_sentiment(tweet_txt, retweet_count)
 
-        #get rid of 0 tweet sentiments (not helpful for decisions)
-        if tweet_sentiment != 0:
-            new_tweet = {'exp_name': exp_name, 'text':tweet_txt, 'sentiment':tweet_sentiment, 'retweet_count': retweet_count, 'timestamp_ms': tweet['timestamp_ms']}
-            logging.debug(new_tweet)
-            exp_data_file = 'farmer/logs/' + exp_name + '.json'
-            with open (exp_data_file, 'a') as exp_data_output:
-                json.dump(new_tweet, exp_data_output)
-                exp_data_output.write(os.linesep)
+        #logging.debug(tweet_txt)
+
+        tweet_sentiment = get_tweet_sentiment(tweet_txt, retweet_count)
+        
+        for exp in experiments:
+           for query in exp['search_query']:
+               if query in tweet_txt and tweet_sentiment !=0:
+
+                    #get rid of 0 tweet sentiments (not helpful for decisions)
+                    new_tweet = {'exp_name': exp['exp_name'], 
+                                    'text':tweet_txt,
+                                    'sentiment':tweet_sentiment,
+                                    'retweet_count': retweet_count,
+                                    'timestamp_ms': tweet['timestamp_ms']}
+
+                    logging.debug(new_tweet)
+
+                    exp_data_file = 'farmer/logs/' + exp['exp_name'] + '-producer.json'
+                    with open (exp_data_file, 'a') as exp_data_output:
+                        json.dump(new_tweet, exp_data_output)
+                        exp_data_output.write(os.linesep)
 
 def get_tweet_sentiment(tweet_txt, retweet_count):
     analysis = TextBlob(tweet_txt)
@@ -60,15 +72,15 @@ def get_tweet_sentiment(tweet_txt, retweet_count):
         new_analysis = analysis.sentiment.polarity * retweet_count 
     return new_analysis
 
-def start_streaming(exp_name, 
+def start_streaming(experiments, 
         twitter_consumer_key, 
         twitter_consumer_secret, 
         twitter_access_token, 
         twitter_access_token_secret, 
         search_query):
 
-    logging.debug(exp_name + ' starting')
-    l = StdOutListener(exp_name)
+    logging.debug('all producer experiments starting')
+    l = StdOutListener(experiments)
     auth = OAuthHandler(twitter_consumer_key, twitter_consumer_secret)
     auth.set_access_token(twitter_access_token, twitter_access_token_secret)
 
