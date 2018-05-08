@@ -43,8 +43,15 @@ def start():
             experiments.append(exp_node)
             for query in exp_node['search_query']:
                 search_query.append(query)
-            
+        
             experiment_twitter = True
+
+        #remove duplicates from list
+        old_search_query = search_query
+        search_query = []
+        for query in old_search_query:
+            if query not in search_query:
+                search_query.append(query)
 
     logging.debug(experiments)
     logging.debug(search_query)

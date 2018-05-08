@@ -47,8 +47,13 @@ def start_analysis(exp_node):
         # after storing everything in memory delete contents of producer file to save memory
         with open(exp_producer_path, 'wr+') as exp_producer_file:
             exp_producer_file.truncate(0)
-
-        avg_sentiment = get_avg_sentiment(exp_producer_data)
+    
+        #make sure exp_producer_data exists
+        if exp_producer_data != None:
+            avg_sentiment = get_avg_sentiment(exp_producer_data)
+        else:
+            pass
+        
         if avg_sentiment == 0:
             logging.debug("Nothing to process, passing and waiting")
             pass
