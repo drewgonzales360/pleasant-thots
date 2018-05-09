@@ -24,6 +24,8 @@ exp_config = 'farmer/logs/experiments.json'
 
 experiment_twitter = False
 
+#<TODO> Add Unit Testing to many errors creeping up now
+
 #if __name__ == '__main__':
 def start():
     print ('Starting Program')

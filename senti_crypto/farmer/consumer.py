@@ -58,8 +58,7 @@ def start_analysis(exp_node):
             logging.debug("Nothing to process, passing and waiting")
             pass
         else:
-            sentiment_range = round(exp_node['sentiment_range']/2)
-
+            sentiment_range = get_sentiment_range(exp_node['sentiment_range'])
             decision = get_trade_decision(avg_sentiment, sentiment_range)
             price = get_current_price(currency)
 
@@ -92,6 +91,12 @@ def start_analysis(exp_node):
                 json.dump(transaction, exp_consumer_file)
                 exp_consumer_file.write(os.linesep)
         time.sleep(exp_node['poll_time'])
+
+def get_sentiment_range(sentiment_range):
+    if sentiment_range > 20 or sentiment_range < 1:
+        return ValueError("Outside Acceptable Sentiment Range 0-20")
+    else:
+        return round(sentiment_range/2)
 
 def get_avg_sentiment(exp_data):
     sum_sentiment = 0
@@ -155,9 +160,10 @@ def create_experiment(price, exp_name, currency, start_balance):
         json.dump(first_transaction, exp_file)
         exp_file.write(os.linesep)
 
+#<TODO> Fix negative transaction of shares exp_shares can neever be negative but it's happening
 def trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value, sentiment_range):
+    transact_shares = get_transact_shares(avg_sentiment) - sentiment_range
     if decision == "BUY":
-        transact_shares = get_transact_shares(avg_sentiment) - sentiment_range
         amount = float(transact_shares) * float(price)
         if amount > exp_balance:
             logging.debug("Cannot Buy, ammount: %f is greater than wallet balance " % (amount))
@@ -168,20 +174,22 @@ def trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value
     elif decision == "HOLD":
         pass
     elif decision == "SELL":
-        transact_shares = get_transact_shares(avg_sentiment) - sentiment_range
-        
         if exp_shares == 0:
             logging.debug('Number of Shares is 0, cannot sell')
             pass
         elif transact_shares >= exp_shares:
+            logging.debug("transact_shares:", str(transact_shares), " >= exp_shares:", str(exp_shares))
             transact_shares = exp_shares
             amount = float(exp_shares) * float(price)
             exp_shares = 0
             exp_balance = exp_balance + amount
-        else:
+        elif transact_shares < exp_shares:
+            logging.debug("transact_shares:", str(transact_shares), " < exp_shares:", str(exp_shares))
             amount = float(transact_shares) * float(price)
             exp_balance = exp_balance + amount
             exp_shares = exp_shares - transact_shares
+        else:
+            logging.error("transaction error")
 
     #get current total value of my wallet
     exp_value = (exp_shares * float(price)) + float(exp_balance)
@@ -189,7 +197,10 @@ def trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value
     return {'exp_shares':exp_shares, 'exp_balance':exp_balance, 'exp_value':exp_value}
 
 def get_transact_shares(avg_sentiment):
-    transact_shares = int(str(abs(avg_sentiment))[2])
+    if avg_sentiment == 1 or avg_sentiment == -1:
+        transact_shares = 10
+    else:
+        transact_shares = int(str(abs(avg_sentiment))[2])
     return transact_shares
 
 def get_current_price(currency):
