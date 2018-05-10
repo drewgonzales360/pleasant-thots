@@ -24,7 +24,7 @@ exp_config = 'farmer/logs/experiments.json'
 
 experiment_twitter = False
 
-#<TODO> Add Unit Testing to many errors creeping up now
+#<TODO> Add More Unit Testing to many errors creeping up now
 
 #if __name__ == '__main__':
 def start():
@@ -45,20 +45,7 @@ def start():
             experiments.append(exp_node)
             for query in exp_node['search_query']:
                 search_query.append(query)
-        
             experiment_twitter = True
-
-        #remove duplicates from list
-        old_search_query = search_query
-        search_query = []
-        for query in old_search_query:
-            if query not in search_query:
-                search_query.append(query)
-
-    logging.debug(experiments)
-    logging.debug(search_query)
-    print (experiments)
-    print (search_query)
 
     #check if twitter experiments and start threads to run experiments
     #twitter only allows 1 max 2 connections so right now there is only
@@ -66,6 +53,16 @@ def start():
     #pulling tweets, on the consumer side there is one thread per 
     #experiment. 
     if experiment_twitter == True:
+        #remove duplicates from list
+        old_search_query = search_query
+        search_query = []
+        for query in old_search_query:
+            if query not in search_query:
+                search_query.append(query)
+
+        logging.debug(experiments)
+        logging.debug(search_query)
+
         try:
             thread.start_new_thread(producer.start_streaming, 
                                         (experiments,

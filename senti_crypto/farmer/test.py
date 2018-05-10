@@ -52,7 +52,7 @@ class test_consumer_methods(unittest.TestCase):
         sentiment_range = consumer.get_sentiment_range(30)
         self.assertRaises(ValueError)
 
-    def test_trade_sim(self):
+    def test_trade_sim_buy(self):
         decision = "BUY"
         price = 10
         avg_sentiment = 0.6
@@ -65,6 +65,43 @@ class test_consumer_methods(unittest.TestCase):
         self.assertEqual(exp_data['exp_balance'], 90)
         self.assertEqual(exp_data['exp_value'], 100)
         
+        decision = "BUY"
+        price = 10
+        avg_sentiment = 0.7
+        exp_shares = 0
+        exp_balance = 100
+        exp_value = 100
+        sentiment_range = 5
+        exp_data = consumer.trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value, sentiment_range)
+        self.assertEqual(exp_data['exp_shares'], 2)
+        self.assertEqual(exp_data['exp_balance'], 80)
+        self.assertEqual(exp_data['exp_value'], 100)
+ 
+        decision = "BUY"
+        price = 10
+        avg_sentiment = -0.6
+        exp_shares = 0
+        exp_balance = 100
+        exp_value = 100
+        sentiment_range = 5
+        exp_data = consumer.trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value, sentiment_range)
+        self.assertEqual(exp_data['exp_shares'], 0)
+        self.assertEqual(exp_data['exp_balance'], 100)
+        self.assertEqual(exp_data['exp_value'], 100)
+
+        decision = "BUY"
+        price = 10
+        avg_sentiment = 0.4
+        exp_shares = 0
+        exp_balance = 100
+        exp_value = 100
+        sentiment_range = 5
+        exp_data = consumer.trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value, sentiment_range)
+        self.assertEqual(exp_data['exp_shares'], 0)
+        self.assertEqual(exp_data['exp_balance'], 100)
+        self.assertEqual(exp_data['exp_value'], 100)
+ 
+    def test_trade_sim_hold(self):
         decision = "HOLD"
         price = 10
         avg_sentiment = 0.4
@@ -77,6 +114,7 @@ class test_consumer_methods(unittest.TestCase):
         self.assertEqual(exp_data['exp_balance'], 100)
         self.assertEqual(exp_data['exp_value'], 100)
 
+    def test_trade_sim_sell(self):
         decision = "SELL"
         price = 10
         avg_sentiment = -0.6
