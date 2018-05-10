@@ -164,9 +164,16 @@ def create_experiment(price, exp_name, currency, start_balance):
 def trade_sim(decision, price, avg_sentiment, exp_shares, exp_balance, exp_value, sentiment_range):
     transact_shares = get_transact_shares(avg_sentiment) - sentiment_range
     if decision == "BUY":
+        if transact_shares <= 0:
+            transact_shares = 0
+
         amount = float(transact_shares) * float(price)
+
         if amount > exp_balance:
             logging.debug("Cannot Buy, ammount: %f is greater than wallet balance " % (amount))
+            pass
+        elif avg_sentiment <= 0:
+            logging.debug("Cannot Buy, average sentiment is below 0, %f " % (avg_sentiment))
             pass
         else:
             exp_balance = exp_balance - amount
